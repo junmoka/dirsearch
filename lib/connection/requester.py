@@ -24,9 +24,7 @@ import urllib.parse
 import thirdparty.requests as requests
 from .request_exception import *
 from .response import *
-from requests.auth import HTTPDigestAuth
-from requests.auth import HTTPBasicAuth
-
+from thirdparty.requests.auth import HTTPBasicAuth, HTTPDigestAuth
 
 class Requester(object):
     def __init__(
