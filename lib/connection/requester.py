@@ -24,6 +24,8 @@ import urllib.parse
 import thirdparty.requests as requests
 from .request_exception import *
 from .response import *
+from requests.auth import HTTPDigestAuth
+from requests.auth import HTTPBasicAuth
 
 
 class Requester(object):
@@ -43,10 +45,18 @@ class Requester(object):
         httpmethod="get",
         data=None,
         scheme=None,
+        username="",
+        password="",
+        basic=False,
+        digest=False
     ):
         self.httpmethod = httpmethod
         self.data = data
         self.headers = {}
+        self.username = username
+        self.password = password
+        self.basic = basic
+        self.digest = digest
 
         # If no backslash, append one
         if not url.endswith("/"):
@@ -164,6 +174,14 @@ class Requester(object):
 
                 if self.randomAgents:
                     self.headers["User-agent"] = random.choice(self.randomAgents)
+                
+                auth = None
+
+                if self.basic:
+                    auth = HTTPBasicAuth(self.username,self.password) 
+
+                if self.digest:
+                    auth = HTTPDigestAuth(self.username,self.password) 
 
                 response = self.session.request(
                     self.httpmethod,
@@ -174,6 +192,7 @@ class Requester(object):
                     headers=dict(self.headers),
                     timeout=self.timeout,
                     verify=False,
+                    auth=auth,
                 )
 
                 result = Response(

@@ -381,6 +381,11 @@ class ArgumentParser(object):
 
         self.recursion_depth = options.recursion_depth
 
+        self.username = options.username
+        self.password = options.password
+        self.basic = options.basic
+        self.digest = options.digest
+
         if self.scheme not in ["http", "https"]:
             print("Invalid URI scheme: {0}".format(self.scheme))
             exit(1)
@@ -458,6 +463,11 @@ class ArgumentParser(object):
         )
         self.exit_on_error = config.safe_getboolean("connection", "exit-on-error", False)
         self.debug = config.safe_getboolean("connection", "debug", False)
+
+        self.username = ""
+        self.password = ""
+        self.basic = False
+        self.digest = False
 
     def parseArguments(self):
         usage = "Usage: %prog [-u|--url] target [-e|--extensions] extensions [options]"
@@ -560,6 +570,13 @@ information at https://github.com/maurosoria/dirsearch.""")
                            default=self.useragent)
         request.add_option("--cookie", action="store", type="string", dest="cookie", default=self.cookie)
 
+        # auth settings
+        auth = OptionGroup(parser, "Auth Settings")
+        auth.add_option("--username", action="store", type="string", dest="username", default=self.username)
+        auth.add_option("--password", action="store", type="string", dest="password", default=self.password)
+        auth.add_option("--basic", action="store_true", dest="basic", default=self.basic)
+        auth.add_option("--digest", action="store_true", dest="digest", default=self.digest)
+
         # Connection Settings
         connection = OptionGroup(parser, "Connection Settings")
         connection.add_option("--timeout", action="store", dest="timeout", type="float",
@@ -599,6 +616,7 @@ information at https://github.com/maurosoria/dirsearch.""")
         parser.add_option_group(dictionary)
         parser.add_option_group(general)
         parser.add_option_group(request)
+        parser.add_option_group(auth)
         parser.add_option_group(connection)
         parser.add_option_group(reports)
         options, arguments = parser.parse_args()

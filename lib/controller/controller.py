@@ -203,6 +203,10 @@ class Controller(object):
                             httpmethod=self.httpmethod,
                             data=self.data,
                             scheme=arguments.scheme,
+                            username=arguments.username,
+                            password=arguments.password,
+                            basic=arguments.basic,
+                            digest=arguments.digest,
                         )
 
                         for key, value in self.headers.items():
